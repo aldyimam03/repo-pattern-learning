@@ -10,18 +10,20 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('student')->controller(StudentController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/{id}', 'show');
-    Route::post('/', 'store');
-    Route::put('/{id}', 'update');
-    Route::delete('/{id}', 'destroy');
-});
+// PENGGUNAAN API RESOURCE LEBIH BOROS 
+// Route::prefix('student')->controller(StudentController::class)->group(function () {
+//     Route::get('/', 'index');
+//     Route::get('/{id}', 'show');
+//     Route::post('/', 'store');
+//     Route::put('/{id}', 'update');
+//     Route::delete('/{id}', 'destroy');
+// });
 
-Route::prefix('room')->controller(RoomController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/{id}', 'show');
-    Route::post('/', 'store');
-    Route::put('/{id}', 'update');
-    Route::delete('/{id}', 'destroy');
-});
+// PENGGUNAAN API RESOURCE LEBIH SINGKAT (SINGULAR)
+// Route::apiResource('student', StudentController::class);
+
+// PENGGUNAAN API RESOURCE LEBIH SINGKAT (PLURAL)
+Route::apiResources([
+    'student' => StudentController::class,
+    'room' => RoomController::class,
+]);
