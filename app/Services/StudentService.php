@@ -25,17 +25,15 @@ class StudentService
     public function store($request)
     {
 
-        $request->validate([
-            'name' => 'required|string',
-            'age' => 'required|integer',
-            'room_id' => 'required|exists:rooms,id'
-        ]);
+        // CARA LAMA DAN KURANG EFISIEN
+        // $data = [
+        //     'name' => $request->name,
+        //     'age' => $request->age,
+        //     'room_id' => $request->room_id,
+        // ];
 
-        $data = [
-            'name' => $request->name,
-            'age' => $request->age,
-            'room_id' => $request->room_id,
-        ];
+        // CARA BARU DAN LEBIH EFISIEN 
+        $data = $request->validated();
 
         return $this->studentInterface->store($data);
     }
@@ -56,11 +54,6 @@ class StudentService
 
     public function update($request, $id)
     {
-        $request->validate([
-            'name' => 'sometimes|required|string',
-            'age' => 'sometimes|required|integer',
-            'room_id' => 'sometimes|exists:rooms,id',
-        ]);
 
         $data = [
             'name' => $request->name,

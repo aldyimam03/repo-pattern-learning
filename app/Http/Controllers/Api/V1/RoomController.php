@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Requests\StoreRoomRequest;
+use App\Http\Requests\UpdateRoomRequest;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Services\RoomService;
@@ -30,14 +32,11 @@ class RoomController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreRoomRequest $request): JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'required|string|unique:rooms,name',
-            ]);
-
             $room = $this->roomService->store($request);
+            
             return response()->json([
                 'message' => 'Room created successfully',
                 'data' => $room
@@ -75,12 +74,9 @@ class RoomController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateRoomRequest $request, string $id): JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'required|string|unique:rooms,name,' . $id,
-            ]);
 
             $updated = $this->roomService->update($request, $id);
 

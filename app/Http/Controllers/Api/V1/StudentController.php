@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 
 class StudentController
 {
@@ -20,10 +22,11 @@ class StudentController
     {
         try {
             $students = $this->studentService->index();
+
             return response()->json($students, 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to retrieve students',
+                'message' => 'Failed to create student',
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -32,13 +35,9 @@ class StudentController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreStudentRequest $request): JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'required|string',
-                'age'=> 'required|integer'
-            ]);
 
             $student = $this->studentService->store($request);
 
@@ -79,13 +78,9 @@ class StudentController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateStudentRequest $request, string $id): JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'sometimes|required|string',
-                'room_id' => 'exists:rooms,id',
-            ]);
 
             $student = $this->studentService->update($request, $id);
 

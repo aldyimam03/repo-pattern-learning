@@ -31,8 +31,13 @@ class RoomRepository implements RoomInterface
             return null;
         }
 
-        $room->update($request);
-        return $room;
+        $updated = $room->update($request);
+
+        if (!$updated) {
+            abort(500, 'failed to update');
+        }
+
+        return $room->refresh();
     }
 
     public function delete($id)

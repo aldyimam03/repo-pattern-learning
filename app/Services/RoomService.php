@@ -16,13 +16,7 @@ class RoomService
     public function store($request)
     {
 
-        $request->validate([
-            'name' => 'required|string',
-        ]);
-
-        $data = [
-            'name' => $request->name,
-        ];
+       $data = $request->validated();
 
         return $this->roomInterface->store($data);
     }
@@ -34,9 +28,6 @@ class RoomService
 
     public function update($request, $id)
     {
-        $request->validate([
-            'name' => 'sometimes|required|string',
-        ]);
 
         $data = [
             'name' => $request->name,
