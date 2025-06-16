@@ -27,4 +27,14 @@ class UpdateStudentRequest extends FormRequest
             'room_id' => 'sometimes|required|exists:rooms,id',
         ];
     }
+
+    protected function passedValidation()
+    {
+        if (!is_int($this->input('age'))) {
+            abort(422, response()->json([
+                'message' => 'Validation failed',
+                'errors' => ['age' => ['Age must be an integer (not string).']],
+            ], 422));
+        }
+    }
 }

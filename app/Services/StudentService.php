@@ -26,14 +26,14 @@ class StudentService
     {
 
         // CARA LAMA DAN KURANG EFISIEN
-        // $data = [
-        //     'name' => $request->name,
-        //     'age' => $request->age,
-        //     'room_id' => $request->room_id,
-        // ];
+        $data = [
+            'name' => $request->name,
+            'age' => $request->age,
+            'room_id' => $request->room_id,
+        ];
 
         // CARA BARU DAN LEBIH EFISIEN 
-        $data = $request->validated();
+        // $data = $request->validated();
 
         return $this->studentInterface->store($data);
     }

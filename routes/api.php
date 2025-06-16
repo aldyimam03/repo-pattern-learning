@@ -2,13 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AuthTokenMiddleware;
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\StudentController;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
 // PENGGUNAAN API RESOURCE LEBIH BOROS 
 // Route::prefix('student')->controller(StudentController::class)->group(function () {
@@ -22,8 +24,14 @@ Route::get('/user', function (Request $request) {
 // PENGGUNAAN API RESOURCE LEBIH SINGKAT (SINGULAR)
 // Route::apiResource('student', StudentController::class);
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
 // PENGGUNAAN API RESOURCE LEBIH SINGKAT (PLURAL)
-Route::apiResources([
-    'student' => StudentController::class,
-    'room' => RoomController::class,
-]);
+Route::middleware(AuthTokenMiddleware::class)->group(function () {
+    Route::apiResources([
+        'student' => StudentController::class,
+        'room' => RoomController::class,
+    ]);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
