@@ -28,7 +28,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // PENGGUNAAN API RESOURCE LEBIH SINGKAT (PLURAL)
-Route::middleware(AuthTokenMiddleware::class)->group(function () {
+// Route::middleware(AuthTokenMiddleware::class)->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::apiResources([
         'student' => StudentController::class,
         'room' => RoomController::class,

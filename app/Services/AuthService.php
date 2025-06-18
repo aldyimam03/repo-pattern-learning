@@ -5,12 +5,15 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
 
         $user = User::create([
@@ -22,7 +25,7 @@ class AuthService
         return $user;
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
 
         $user = User::where('email', $request->email)->first();
@@ -31,9 +34,27 @@ class AuthService
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $token = Str::random(60);
-        $user->api_token = $token;
-        $user->save();
+        $credentials = $request->only('email', 'password');
+
+        //if auth failed
+        if (!$token = auth()->guard('api')->attempt($credentials)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email atau Password Anda salah'
+            ], 401);
+        }
+
+        //if auth success
+        return [
+            'success' => true,
+            'user'    => auth()->guard('api')->user(),
+            'token'   => $token
+        ];
+
+        // MANUAL TOKEN
+        // $token = Str::random(60);
+        // $user->api_token = $token;
+        // $user->save();
 
         return [
             'user' => $user,
@@ -43,17 +64,23 @@ class AuthService
 
     public function logout(Request $request)
     {
-        $token = $request->bearerToken();
+        // MANUAL TOKEN
+        // $token = $request->bearerToken();
+        // $user = User::where('api_token', $token)->first();
+        // if (!$user || !Hash::check($request->password, $user->password)) {
+        //     throw new \Exception('Invalid credentials');
+        // }
+        // $user->api_token = null;
+        // $user->save();
 
-        $user = User::where('api_token', $token)->first();
+        //remove token
 
-        if (!$user) {
-            return response()->json(['message' => 'Invalid token'], 401);
+        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+
+        if ($removeToken) {
+            return response()->json([
+                'message' => 'Logout Successfully',
+            ]);
         }
-
-        $user->api_token = null;
-        $user->save();
-
-        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 }

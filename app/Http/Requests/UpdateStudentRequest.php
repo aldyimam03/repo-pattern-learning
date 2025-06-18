@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Resources\FailedValidationResource;
 
 class UpdateStudentRequest extends FormRequest
 {
@@ -28,13 +31,20 @@ class UpdateStudentRequest extends FormRequest
         ];
     }
 
-    protected function passedValidation()
+    // protected function passedValidation()
+    // {
+    //     if (!is_int($this->input('age'))) {
+    //         abort(422, response()->json([
+    //             'message' => 'Validation failed',
+    //             'errors' => ['age' => ['Age must be an integer (not string).']],
+    //         ], 422));
+    //     }
+    // }
+
+    protected function failedValidation(Validator $validator)
     {
-        if (!is_int($this->input('age'))) {
-            abort(422, response()->json([
-                'message' => 'Validation failed',
-                'errors' => ['age' => ['Age must be an integer (not string).']],
-            ], 422));
-        }
+        throw new HttpResponseException(
+            response()->json(new FailedValidationResource($validator), 422)
+        );
     }
 }
