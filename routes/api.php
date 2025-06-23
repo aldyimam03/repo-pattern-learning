@@ -40,26 +40,26 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     // bisa diakses semua user
     Route::prefix('student')->controller(StudentController::class)->group(function () {
-        Route::get('/', [StudentController::class, 'index']);
-        Route::get('/{id}', [StudentController::class, 'show']);
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
     });
     Route::prefix('room')->controller(StudentController::class)->group(function () {
-        Route::get('/', [RoomController::class, 'index']);
-        Route::get('/{id}', [RoomController::class, 'show']);
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
     });
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // hanya admin
     Route::middleware('role:admin')->group(function () {
         Route::prefix('student')->controller(StudentController::class)->group(function () {
-            Route::post('/', [StudentController::class, 'store']);
-            Route::put('/{id}', [StudentController::class, 'update']);
-            Route::delete('/{id}', [StudentController::class, 'destroy']);
+            Route::post('/', 'store');
+            Route::put('/{id}',  'update');
+            Route::delete('/{id}',  'destroy');
         });
         Route::prefix('room')->controller(RoomController::class)->group(function () {
-            Route::post('/', [RoomController::class, 'store']);
-            Route::put('/{id}', [RoomController::class, 'update']);
-            Route::delete('/{id}', [RoomController::class, 'destroy']);
+            Route::post('/', 'store');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
         });
     });
 });
