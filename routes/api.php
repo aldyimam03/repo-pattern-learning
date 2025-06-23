@@ -24,15 +24,42 @@ use App\Http\Controllers\Api\V1\StudentController;
 // PENGGUNAAN API RESOURCE LEBIH SINGKAT (SINGULAR)
 // Route::apiResource('student', StudentController::class);
 
+// PENGGUNAAN API RESOURCE LEBIH SINGKAT (PLURAL)
+// Route::middleware(AuthTokenMiddleware::class)->group(function () {
+// Route::middleware('auth:api')->group(function () {
+//     Route::apiResources([
+//         'student' => StudentController::class,
+//         'room' => RoomController::class,
+//     ]);
+//     Route::post('/logout', [AuthController::class, 'logout']);
+// });
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// PENGGUNAAN API RESOURCE LEBIH SINGKAT (PLURAL)
-// Route::middleware(AuthTokenMiddleware::class)->group(function () {
 Route::middleware('auth:api')->group(function () {
-    Route::apiResources([
-        'student' => StudentController::class,
-        'room' => RoomController::class,
-    ]);
+    // bisa diakses semua user
+    Route::prefix('student')->controller(StudentController::class)->group(function () {
+        Route::get('/', [StudentController::class, 'index']);
+        Route::get('/{id}', [StudentController::class, 'show']);
+    });
+    Route::prefix('room')->controller(StudentController::class)->group(function () {
+        Route::get('/', [RoomController::class, 'index']);
+        Route::get('/{id}', [RoomController::class, 'show']);
+    });
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // hanya admin
+    Route::middleware('role:admin')->group(function () {
+        Route::prefix('student')->controller(StudentController::class)->group(function () {
+            Route::post('/', [StudentController::class, 'store']);
+            Route::put('/{id}', [StudentController::class, 'update']);
+            Route::delete('/{id}', [StudentController::class, 'destroy']);
+        });
+        Route::prefix('room')->controller(RoomController::class)->group(function () {
+            Route::post('/', [RoomController::class, 'store']);
+            Route::put('/{id}', [RoomController::class, 'update']);
+            Route::delete('/{id}', [RoomController::class, 'destroy']);
+        });
+    });
 });
