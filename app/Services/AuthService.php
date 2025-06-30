@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Str;
+use App\Mail\VerifyUserMail;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\RegisterRequest;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -21,6 +23,11 @@ class AuthService
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($user) {
+            // Kirim email verifikasi setelah user berhasil dibuat
+            Mail::to($user->email)->send(new VerifyUserMail($user));
+        }
 
         return $user;
     }

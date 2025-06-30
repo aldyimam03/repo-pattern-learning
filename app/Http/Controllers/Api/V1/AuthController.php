@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
+use App\Mail\VerifyUserMail;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\RegisterRequest;
 
 
@@ -22,7 +24,7 @@ class AuthController
             $user = $this->authService->register($request);
 
             return response()->json([
-                'message' => 'User registered successfully',
+                'message' => 'User registered successfully. Check your inbox to verify email',
                 'data' => $user,
             ], 201);
         } catch (\Throwable $e) {

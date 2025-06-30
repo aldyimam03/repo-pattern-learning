@@ -6,6 +6,7 @@ use App\Http\Middleware\AuthTokenMiddleware;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\StudentController;
+use App\Http\Controllers\Api\V1\VerificationController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -35,9 +36,15 @@ use App\Http\Controllers\Api\V1\StudentController;
 // });
 
 Route::post('/register', [AuthController::class, 'register']);
+
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:api', 'verified')->group(function () {
     // bisa diakses semua user
     Route::prefix('student')->controller(StudentController::class)->group(function () {
         Route::get('/', 'index');
