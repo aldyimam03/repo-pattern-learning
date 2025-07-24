@@ -15,12 +15,14 @@ class VerifyUserMail extends Mailable
     use Queueable, SerializesModels;
 
     public $verificationUrl;
+    public $user;
 
     /**
      * Create a new message instance.
      */
     public function __construct($user)
     {
+        $this->user = $user;
         // Buat URL verifikasi bertanda tangan (signed URL)
         $this->verificationUrl = URL::temporarySignedRoute(
             'verification.verify', // Ini harus sama dengan nama rute kamu
@@ -42,6 +44,7 @@ class VerifyUserMail extends Mailable
             ->view('emails.verify-user')
             ->with([
                 'verificationUrl' => $this->verificationUrl,
+                'user' => $this->user,
             ]);
     }
 

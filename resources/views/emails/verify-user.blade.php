@@ -10,7 +10,7 @@
 
 <body>
 
-    <h3>Halo,</h3>
+    <h3>Halo, {{ $user->name }}</h3>
     <p>Silakan klik tombol berikut untuk memverifikasi akun Anda:</p>
 
     <button>
